@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { addTask, updateTask, deleteTask } from './redux/actions/taskActions';
 import Navbar from './components/Navbar';
@@ -10,6 +10,13 @@ const App = () => {
   const dispatch = useDispatch();
   const [taskText, setTaskText] = useState('');
   const [editingTask, setEditingTask] = useState(null);
+
+  // useEffect(() => {
+  //   const lcStgItem = localStorage.getItem("persist:root")
+  //   const parseJson = JSON.parse(lcStgItem)
+  //   const parseJsonTask = JSON.parse(parseJson.tasks)
+  //   console.log("parseJsonTask ===> ", parseJsonTask)
+  // }, [tasks])
 
   const handleAddTask = () => {
     if (taskText.trim() !== '') {
@@ -48,18 +55,24 @@ const App = () => {
         />
         <button className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 mb-8" onClick={handleAddTask}>{editingTask ? 'Update Task' : 'Add Task'}</button>
         <h3 className="font-medium text-2xl mb-4">Your Task</h3>
-        {tasks?.map((task, index) => (
-          <div key={task.id} className="flex items-center justify-between mb-2 border rounded-md p-2">
-            <div>
-              <span className="py-1 px-2.5 bg-black text-white rounded-full">{index + 1}</span>
-              <span className="px-2 font-medium">{task.text}</span>
-            </div>
-            <div>
-              <button className="bg-blue-500 hover:bg-blue-700 mr-4 py-1 px-2 text-white rounded" onClick={() => handleEditTask(task)}>Edit</button>
-              <button className="bg-red-500 hover:bg-red-700 py-1 px-2 text-white rounded" onClick={() => handleDeleteTask(task.id)}>Delete</button>
-            </div>
-          </div>
-        ))}
+        {tasks && tasks.length > 0 ?
+          <>
+            {tasks.map((task, index) => (
+              <div key={task.id} className="flex items-center justify-between mb-2 border rounded-md p-2">
+                <div>
+                  <span className="py-1 px-2.5 bg-black text-white rounded-full">{index + 1}</span>
+                  <span className="px-2 font-medium">{task.text}</span>
+                </div>
+                <div>
+                  <button className="bg-blue-500 hover:bg-blue-700 mr-4 py-1 px-2 text-white rounded" onClick={() => handleEditTask(task)}>Edit</button>
+                  <button className="bg-red-500 hover:bg-red-700 py-1 px-2 text-white rounded" onClick={() => handleDeleteTask(task.id)}>Delete</button>
+                </div>
+              </div>
+            ))}
+          </>
+          :
+          <p>No tasks to display. Add tasks to get started!</p>
+        }
       </div>
       <Footer />
     </>
